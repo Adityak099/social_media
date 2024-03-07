@@ -6,7 +6,7 @@ const likeSchema = new Schema(
     post: {
       type: Schema.Types.ObjectId,
       ref: "Post",
-      required: true,
+      required: false,
     },
     comment: {
       type: Schema.Types.ObjectId,

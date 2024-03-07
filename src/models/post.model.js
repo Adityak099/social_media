@@ -12,9 +12,14 @@ const postSchema = new Schema(
       required: true,
     },
     likes: {
-      type: ,
+      type: Schema.Types.ObjectId,
+      ref: "Like",
       required: false,
       default: 0,
+    },
+    image: {
+      type: String,
+      required: true,
     },
     isPublished: {
       type: Boolean,
@@ -28,4 +33,4 @@ const postSchema = new Schema(
   { timestamps: true }
 );
 videoSchema.plugin(mongooseAggregatePaginate);
-export const Video = mongoose.model("Post", videoSchema);
+export const Post = mongoose.model("Post", postSchema);
