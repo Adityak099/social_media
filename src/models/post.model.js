@@ -12,8 +12,7 @@ const postSchema = new Schema(
       required: true,
     },
     likes: {
-      type: Schema.Types.ObjectId,
-      ref: "Like",
+      type: Number,
       required: false,
       default: 0,
     },
@@ -32,5 +31,5 @@ const postSchema = new Schema(
   },
   { timestamps: true }
 );
-videoSchema.plugin(mongooseAggregatePaginate);
+postSchema.plugin(mongooseAggregatePaginate);
 export const Post = mongoose.model("Post", postSchema);

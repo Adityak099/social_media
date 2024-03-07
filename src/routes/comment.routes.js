@@ -7,6 +7,6 @@ import {
 const router = Router();
 router.use(verifyJwt);
 //post routes
-router.route("/create-comment").post(createComment);
+router.route("/new-comment").post(createComment);
 router.route("/delete-comment").delete(deleteComment);
 export default router;
