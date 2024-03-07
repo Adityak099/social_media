@@ -1,11 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
-const videoSchema = new Schema(
+const postSchema = new Schema(
   {
-    videoFile: {
-      type: String,
-      required: true,
-    },
     title: {
       type: String,
       required: true,
@@ -15,10 +11,14 @@ const videoSchema = new Schema(
       type: String,
       required: true,
     },
-    views: {
+    likes: {
       type: Number,
       required: false,
       default: 0,
+    },
+    image: {
+      type: String,
+      required: true,
     },
     isPublished: {
       type: Boolean,
@@ -31,5 +31,5 @@ const videoSchema = new Schema(
   },
   { timestamps: true }
 );
-videoSchema.plugin(mongooseAggregatePaginate);
-export const Video = mongoose.model("Video", videoSchema);
+postSchema.plugin(mongooseAggregatePaginate);
+export const Post = mongoose.model("Post", postSchema);

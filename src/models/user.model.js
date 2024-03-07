@@ -32,7 +32,7 @@ const userSchema = new Schema(
       type: String, //cloudniary url
       required: false,
     },
-    watchHistory: [
+    likeHistory: [
       {
         type: Schema.Types.ObjectId,
         ref: "Video",

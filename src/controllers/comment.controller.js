@@ -4,18 +4,18 @@ import { ApiError } from "../utils/ApiError.js";
 import { APiResponse } from "../utils/ApiResponse.js";
 const createComment = asyncHandler(async (req, res) => {
   try {
-    const { videoId, comment } = req.body;
-    if (!videoId) {
-      throw new ApiError(400, "Video id is required");
+    const { postId, comment } = req.body;
+    if (!postId) {
+      throw new ApiError(400, "Post id is required");
     }
     const userId = req.user._id;
     const createdComment = await Comment.create({
-      video: videoId,
-      content: comment,
+      post: postId,
+      comment,
       owner: userId,
     });
     if (!createdComment) {
-      throw new ApiError(500, "Failed to create comment");
+      res.status(400).json(new ApiError(400, "Error creating comment", null));
     }
     return res
       .status(201)
@@ -26,22 +26,18 @@ const createComment = asyncHandler(async (req, res) => {
 });
 
 const deleteComment = asyncHandler(async (req, res) => {
-  //get comment id
-  // check if the comment exists for the comment id provided
-  //if true findanddelete
-  //send response
-
   try {
     const { commentId } = req.body;
     if (!commentId) {
-      throw new ApiError(400, "Comment id is required");
+      res.status(400).json(new ApiError(400, "Comment id is required", null));
     }
     const userId = req.user._id;
     const comment = await Comment.findOne({ _id: commentId, owner: userId });
     if (!comment || comment.length === 0) {
       const error = new ApiError(
         404,
-        "Comment not found or you are not the owner of the comment"
+        "Comment not found or you are not the owner of the comment",
+        null
       );
       return res.status(400).json({
         data: null,

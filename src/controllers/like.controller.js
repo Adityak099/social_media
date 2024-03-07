@@ -2,30 +2,27 @@ import { Like } from "../models/like.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { APiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-const createVideoLike = asyncHandler(async (req, res) => {
+const createPostLike = asyncHandler(async (req, res) => {
   try {
-    // get video id from request body
-    const { videoId } = req.body;
-    if (!videoId) {
+    // get post id from request body
+    const { postId } = req.body;
+    if (!postId) {
       return res
         .status(400)
-        .json(new APiResponse(400, "Video id is required", null));
+        .json(new APiResponse(400, "post id is required", null));
     }
     // get user id from request object
     const userId = req.user._id;
-    if (!userId) {
-      return res.status(400).json(new APiResponse(400, "User id is required"));
-    }
-    // check if user has already liked the video
-    const like = await Like.findOne({ video: videoId, likedBy: userId });
-    // if user has already liked the video, return error
+    // check if user has already liked the post
+    const like = await Like.findOne({ post: postId, likedBy: userId });
+    // if user has already liked the post, return error
     if (like) {
       return res
         .status(400)
-        .json({ message: "You have already liked this video" });
+        .json({ message: "You have already liked this post" });
     }
     // create new like
-    const newLike = await Like.create({ video: videoId, likedBy: userId });
+    const newLike = await Like.create({ post: postId, likedBy: userId });
     // return success response
     return res.status(201).json(new APiResponse(201, "Like created", newLike));
   } catch (error) {
@@ -33,21 +30,21 @@ const createVideoLike = asyncHandler(async (req, res) => {
   }
 });
 
-const deleteVideoLike = asyncHandler(async (req, res) => {
-  // get video id from request body
-  const { videoId } = req.body;
-  if (!videoId) {
-    throw new ApiError(400, "Video id is required");
+const deletePostLike = asyncHandler(async (req, res) => {
+  // get post id from request body
+  const { postId } = req.body;
+  if (!postId) {
+    throw new ApiError(400, "post id is required");
   }
   // get user id from request object
   const userId = req.user._id;
-  // check if user has already liked the video
-  const like = await Like.findOne({ video: videoId, likedBy: userId });
-  // if user has not liked the video, return error
+  // check if user has already liked the post
+  const like = await Like.findOne({ post: postId, likedBy: userId });
+  // if user has not liked the post, return error
   if (!like) {
     return res
       .status(400)
-      .json(new ApiError(400, "You have not liked this video"));
+      .json(new ApiError(400, "You have not liked this post"));
   }
   // delete like
   await Like.findByIdAndDelete(like._id);
@@ -167,20 +164,20 @@ const deleteTweetLike = asyncHandler(async (req, res) => {
 //getting all likes
 const getAllLikes = asyncHandler(async (req, res) => {
   try {
-    const { videoId, commentId, tweetId } = req.body;
-    // if (!(videoId && commentId && tweetId)) {
+    const { postId, commentId, tweetId } = req.body;
+    // if (!(postId && commentId && tweetId)) {
     //   return res.status(400).json(new APiResponse(400, "Invalid request", null));
     // }
-    if (videoId) {
-      const videoLikes = await Like.find({ video: videoId });
-      if (!videoLikes || videoLikes.length === 0) {
+    if (postId) {
+      const postLikes = await Like.find({ post: postId });
+      if (!postLikes || postLikes.length === 0) {
         return res
           .status(404)
           .json(new APiResponse(404, "No likes found", null));
       }
       return res
         .status(200)
-        .json(new APiResponse(200, "Likes fetched successfully", videoLikes));
+        .json(new APiResponse(200, "Likes fetched successfully", postLikes));
     } else if (commentId) {
       const commentLikes = await Like.find({ comment: commentId });
       if (!commentLikes || commentLikes.length === 0) {
@@ -208,20 +205,20 @@ const getAllLikes = asyncHandler(async (req, res) => {
   }
 });
 
-const getVideoLikes = asyncHandler(async (req, res) => {
+const getpostLikes = asyncHandler(async (req, res) => {
   try {
-    const { videoId } = req.body;
-    const videoLikes = await Like.find({ video: videoId });
-    if (!videoLikes || videoLikes.length === 0) {
+    const { postId } = req.body;
+    const postLikes = await Like.find({ post: postId });
+    if (!postLikes || postLikes.length === 0) {
       return res.status(404).json(new APiResponse(404, "No likes found", null));
     }
     return res
       .status(200)
-      .json(new APiResponse(200, "Likes fetched successfully", videoLikes));
+      .json(new APiResponse(200, "Likes fetched successfully", postLikes));
   } catch (err) {
     return res
       .status(500)
-      .json(new ApiError(500, error.message || "Failed to get video Likes"));
+      .json(new ApiError(500, error.message || "Failed to get post Likes"));
   }
 });
 const getCommentLikes = asyncHandler(async (req, res) => {
@@ -258,14 +255,14 @@ const getTweetLikes = asyncHandler(async (req, res) => {
   }
 });
 export {
-  createVideoLike,
-  deleteVideoLike,
+  createPostLike,
+  deletePostLike as deletepostLike,
   createCommentLike,
   deleteCommentLike,
   createTweetLike,
   deleteTweetLike,
   getAllLikes,
-  getVideoLikes,
+  getpostLikes,
   getCommentLikes,
   getTweetLikes,
 };
